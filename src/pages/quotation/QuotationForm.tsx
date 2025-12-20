@@ -29,6 +29,7 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
   const { list: projects } = useAppSelector((s) => s.project)
   const { showNotification, NotificationContainer } = useNotification()
   const [lastAction, setLastAction] = useState<'create' | 'update' | null>(null)
+  const [showBoqModal, setShowBoqModal] = useState(false)
 
   const [formData, setFormData] = useState<QuotationFormData>({
     customerId: 0,
@@ -257,7 +258,17 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
         </div>
 
         <div className="form-section">
-          <h3>BOQ Items</h3>
+          <div className="section-header">
+            <h3>BOQ Items</h3>
+            <button
+              type="button"
+              className="btn-icon"
+              onClick={() => setShowBoqModal(true)}
+              title="Manage BOQ Items"
+            >
+              ✏️
+            </button>
+          </div>
           <ConstructionItemSelector
             onItemSelect={(item) => {
               dispatch(addBoqItem(item))
@@ -369,6 +380,126 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
           )}
         </div>
       </form>
+
+      {/* BOQ Management Modal */}
+      {showBoqModal && (
+        <div className="modal-overlay" onClick={() => setShowBoqModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Manage BOQ Items</h2>
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => setShowBoqModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="boq-modal-section">
+                <h4>Add New Item</h4>
+                <ConstructionItemSelector
+                  onItemSelect={(item) => {
+                    dispatch(addBoqItem(item))
+                  }}
+                />
+              </div>
+
+              {items.length > 0 && (
+                <div className="boq-modal-section">
+                  <h4>Current Items ({items.length})</h4>
+                  <div className="boq-table-wrapper">
+                    <table className="boq-table">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Description</th>
+                          <th>Unit</th>
+                          <th>Qty</th>
+                          <th>Rate</th>
+                          <th>Amount</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.map((row, index) => (
+                          <tr key={row.tempId}>
+                            <td>{index + 1}</td>
+                            <td>{row.description}</td>
+                            <td>{row.unit}</td>
+                            <td>
+                              <input
+                                type="number"
+                                value={row.quantity}
+                                onChange={(e) =>
+                                  dispatch(
+                                    updateBoqItem({
+                                      tempId: row.tempId,
+                                      quantity: Number(e.target.value)
+                                    })
+                                  )
+                                }
+                                min="0.01"
+                                step="0.01"
+                                className="boq-input"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={row.rate}
+                                onChange={(e) =>
+                                  dispatch(
+                                    updateBoqItem({
+                                      tempId: row.tempId,
+                                      rate: Number(e.target.value)
+                                    })
+                                  )
+                                }
+                                min="0"
+                                step="0.01"
+                                className="boq-input"
+                              />
+                            </td>
+                            <td className="amount-cell">
+                              ₹{row.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-delete"
+                                onClick={() => dispatch(removeBoqItem(row.tempId))}
+                              >
+                                ✕
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {items.length === 0 && (
+                <div className="boq-empty-state">
+                  <p>No BOQ items added yet. Use the selector above to add items.</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setShowBoqModal(false)}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

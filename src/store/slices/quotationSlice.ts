@@ -110,7 +110,7 @@ const quotationSlice = createSlice({
       state.error = action.payload
       state.list = []
     },
-    createQuotation(state) {
+    createQuotation(state, action: PayloadAction<{ formData: QuotationFormData; items: BoqItem[] }>) {
       state.loading = true
       state.error = null
     },
