@@ -6,20 +6,26 @@ export type SalaryType = 'Daily' | 'Weekly' | 'Monthly' | 'Contract'
 
 export interface Employee {
   id: number
-  type: EmployeeType
-  fullName: string
+  type?: EmployeeType
+  firstName?: string
+  lastName?: string
   mobileNumber: string
   email?: string
   address?: string
   city?: string
   state?: string
   pincode?: string
-  designation?: string
+  designation: string
   department?: string
+  roleId?: number
+  roleName?: string
+  userId?: number
+  userName?: string
   projectId?: number
-  joiningDate?: string
+  assignedProject?: string
+  joiningDate: string
   status: EmployeeStatus
-  salaryType?: SalaryType
+  salaryType: SalaryType
   ratePerDay?: number
   monthlySalary?: number
   bankName?: string
@@ -33,20 +39,24 @@ export interface Employee {
 }
 
 export interface EmployeeFormData {
-  type: EmployeeType
-  fullName: string
+  type?: EmployeeType
+  firstName?: string
+  lastName?: string
   mobileNumber: string
   email?: string
   address?: string
   city?: string
   state?: string
   pincode?: string
-  designation?: string
+  designation: string
   department?: string
+  roleId?: number
+  userId?: number
   projectId?: number
-  joiningDate?: string
+  assignedProject?: string
+  joiningDate: string
   status: EmployeeStatus
-  salaryType?: SalaryType
+  salaryType: SalaryType
   ratePerDay?: number
   monthlySalary?: number
   bankName?: string

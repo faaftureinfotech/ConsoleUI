@@ -323,7 +323,7 @@ export default function ExpenseForm({ expense, onSuccess }: ExpenseFormProps) {
                   <option key={party.id} value={party.id}>
                     {formData.partyType === 'Supplier'
                       ? (party as any).supplierName
-                      : (party as any).fullName}
+                      : `${(party as any).firstName || ''} ${(party as any).lastName || ''}`.trim()}
                   </option>
                 ))}
               </select>

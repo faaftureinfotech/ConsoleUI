@@ -7,6 +7,8 @@ import {
   Expense
 } from '../../store/slices/expenseSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './ExpenseList.css'
 
 export default function ExpenseList() {
@@ -41,6 +43,8 @@ export default function ExpenseList() {
 
     return matchesSearch && matchesProject
   })
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Expense>(filteredExpenses)
 
   const totalAmount = filteredExpenses.reduce((sum, e) => sum + e.totalAmount, 0)
 
@@ -84,19 +88,59 @@ export default function ExpenseList() {
               <table className="expense-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Project</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Party</th>
-                    <th>Amount</th>
-                    <th>Total</th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'expenseDate')}
+                      onClick={() => handleSort('expenseDate')}
+                    >
+                      Date
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'projectName')}
+                      onClick={() => handleSort('projectName')}
+                    >
+                      Project
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'expenseType')}
+                      onClick={() => handleSort('expenseType')}
+                    >
+                      Type
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'expenseCategory')}
+                      onClick={() => handleSort('expenseCategory')}
+                    >
+                      Category
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'description')}
+                      onClick={() => handleSort('description')}
+                    >
+                      Description
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'partyName')}
+                      onClick={() => handleSort('partyName')}
+                    >
+                      Party
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'amount')}
+                      onClick={() => handleSort('amount')}
+                    >
+                      Amount
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'totalAmount')}
+                      onClick={() => handleSort('totalAmount')}
+                    >
+                      Total
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredExpenses.map((expense) => (
+                  {sortedData.map((expense) => (
                     <tr key={expense.id}>
                       <td>{new Date(expense.expenseDate).toLocaleDateString()}</td>
                       <td>{expense.projectName || '-'}</td>

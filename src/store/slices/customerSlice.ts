@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface Customer {
   customerId: number
-  name: string
+  firstName: string
+  lastName: string
   contactPerson?: string
   phone?: string
   email?: string
@@ -12,7 +13,8 @@ export interface Customer {
 }
 
 export interface CustomerFormData {
-  name: string
+  firstName: string
+  lastName: string
   contactPerson?: string
   phone?: string
   email?: string

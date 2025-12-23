@@ -158,3 +158,175 @@
   }
 }
 
+.dashboard-recent-quotations {
+  margin-bottom: 40px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-recent-quotations h2 {
+  margin: 0 0 24px 0;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.quotations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.quotation-card {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.quotation-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.quotation-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.quotation-card-header h3 {
+  margin: 0 0 4px 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.quotation-customer {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.quotation-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quotation-detail {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.detail-label {
+  color: #6b7280;
+}
+
+.detail-value {
+  color: #111827;
+  font-weight: 600;
+}
+
+.quotation-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-send {
+  background: #10b981;
+  color: white;
+}
+
+.btn-send:hover {
+  background: #059669;
+}
+
+.btn-print {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-print:hover {
+  background: #4f46e5;
+}
+
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-edit:hover {
+  background: #2563eb;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-draft {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.status-sent {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-accepted {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-expired {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+@media (max-width: 768px) {
+  .quotations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quotation-card-actions {
+    flex-direction: column;
+  }
+
+  .btn-sm {
+    width: 100%;
+  }
+}
+

@@ -135,6 +135,21 @@
   color: #991b1b;
 }
 
+.user-link-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: #3730a3;
+  display: inline-block;
+}
+
+.no-user-badge {
+  color: #9ca3af;
+  font-style: italic;
+}
+
 .action-buttons {
   display: flex;
   gap: 8px;

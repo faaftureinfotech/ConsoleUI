@@ -21,7 +21,8 @@ export default function CustomerForm({ customer, onSuccess }: CustomerFormProps)
   const { showNotification, NotificationContainer } = useNotification()
 
   const [formData, setFormData] = useState<CustomerFormData>({
-    name: '',
+    firstName: '',
+    lastName: '',
     contactPerson: '',
     phone: '',
     email: '',
@@ -36,7 +37,8 @@ export default function CustomerForm({ customer, onSuccess }: CustomerFormProps)
   useEffect(() => {
     if (customer) {
       setFormData({
-        name: customer.name || '',
+        firstName: customer.firstName || '',
+        lastName: customer.lastName || '',
         contactPerson: customer.contactPerson || '',
         phone: customer.phone || '',
         email: customer.email || '',
@@ -46,7 +48,8 @@ export default function CustomerForm({ customer, onSuccess }: CustomerFormProps)
       })
     } else {
       setFormData({
-        name: '',
+        firstName: '',
+        lastName: '',
         contactPerson: '',
         phone: '',
         email: '',
@@ -107,9 +110,14 @@ export default function CustomerForm({ customer, onSuccess }: CustomerFormProps)
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof CustomerFormData, string>> = {}
 
-    // Name is required
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
+    // First name is required
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required'
+    }
+
+    // Last name is required
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required'
     }
 
     // Email validation
@@ -160,19 +168,36 @@ export default function CustomerForm({ customer, onSuccess }: CustomerFormProps)
     <>
       <NotificationContainer />
       <form className="customer-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">
-            Name <span className="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-            className={errors.name ? 'error' : ''}
-            placeholder="Enter customer name"
-          />
-          {errors.name && <span className="error-message">{errors.name}</span>}
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="firstName">
+              First Name <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              value={formData.firstName}
+              onChange={(e) => handleChange('firstName', e.target.value)}
+              className={errors.firstName ? 'error' : ''}
+              placeholder="Enter first name"
+            />
+            {errors.firstName && <span className="error-message">{errors.firstName}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="lastName">
+              Last Name <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              value={formData.lastName}
+              onChange={(e) => handleChange('lastName', e.target.value)}
+              className={errors.lastName ? 'error' : ''}
+              placeholder="Enter last name"
+            />
+            {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+          </div>
         </div>
 
         <div className="form-group">

@@ -4,9 +4,12 @@ import {
   fetchQuotations,
   deleteQuotation,
   selectQuotation,
+  updateQuotationStatus,
   Quotation
 } from '../../store/slices/quotationSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './QuotationList.css'
 
 export default function QuotationList() {
@@ -31,6 +34,24 @@ export default function QuotationList() {
     dispatch(selectQuotation(quotation))
   }
 
+  const handleSend = (quotation: Quotation) => {
+    if (window.confirm('Are you sure you want to send this quotation?')) {
+      dispatch(updateQuotationStatus({ id: quotation.id, status: 'Sent' }))
+      showNotification('success', 'Quotation sent successfully')
+    }
+  }
+
+  const handlePrint = (quotation: Quotation) => {
+    // Store quotation in sessionStorage for print page
+    sessionStorage.setItem('printQuotation', JSON.stringify(quotation))
+    const printWindow = window.open('/quotation/print', '_blank')
+    if (printWindow) {
+      printWindow.onload = () => {
+        setTimeout(() => printWindow.print(), 500)
+      }
+    }
+  }
+
   const filteredQuotations = (Array.isArray(list) ? list : []).filter((quotation) => {
     const matchesSearch =
       quotation.quotationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +62,8 @@ export default function QuotationList() {
 
     return matchesSearch && matchesStatus
   })
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Quotation>(filteredQuotations)
 
   return (
     <>
@@ -88,20 +111,65 @@ export default function QuotationList() {
             <table className="quotation-table">
               <thead>
                 <tr>
-                  <th>Quotation #</th>
-                  <th>Customer</th>
-                  <th>Project</th>
-                  <th>Date</th>
-                  <th>Valid Until</th>
-                  <th>Sub Total</th>
-                  <th>Tax</th>
-                  <th>Total</th>
-                  <th>Status</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'quotationNumber')}
+                    onClick={() => handleSort('quotationNumber')}
+                  >
+                    Quotation #
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'customerName')}
+                    onClick={() => handleSort('customerName')}
+                  >
+                    Customer
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'projectName')}
+                    onClick={() => handleSort('projectName')}
+                  >
+                    Project
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'quotationDate')}
+                    onClick={() => handleSort('quotationDate')}
+                  >
+                    Date
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'validUntil')}
+                    onClick={() => handleSort('validUntil')}
+                  >
+                    Valid Until
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'subTotal')}
+                    onClick={() => handleSort('subTotal')}
+                  >
+                    Sub Total
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'taxAmount')}
+                    onClick={() => handleSort('taxAmount')}
+                  >
+                    Tax
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'totalAmount')}
+                    onClick={() => handleSort('totalAmount')}
+                  >
+                    Total
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'status')}
+                    onClick={() => handleSort('status')}
+                  >
+                    Status
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredQuotations.map((quotation) => (
+                {sortedData.map((quotation) => (
                   <tr key={quotation.id}>
                     <td className="quotation-number">{quotation.quotationNumber || `#${quotation.id}`}</td>
                     <td>{quotation.customerName || '-'}</td>
@@ -125,6 +193,22 @@ export default function QuotationList() {
                           onClick={() => handleEdit(quotation)}
                         >
                           Edit
+                        </button>
+                        {quotation.status === 'Draft' && (
+                          <button
+                            className="btn btn-sm btn-send"
+                            onClick={() => handleSend(quotation)}
+                            title="Send Quotation"
+                          >
+                            Send
+                          </button>
+                        )}
+                        <button
+                          className="btn btn-sm btn-print"
+                          onClick={() => handlePrint(quotation)}
+                          title="Print Quotation"
+                        >
+                          Print
                         </button>
                         <button
                           className="btn btn-sm btn-delete"

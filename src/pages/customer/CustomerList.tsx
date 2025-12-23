@@ -7,6 +7,8 @@ import {
   Customer
 } from '../../store/slices/customerSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './CustomerList.css'
 
 export default function CustomerList() {
@@ -49,10 +51,13 @@ export default function CustomerList() {
   }
 
   const filteredCustomers = (Array.isArray(list) ? list : []).filter((customer) =>
-    customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.phone?.includes(searchTerm)
   )
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Customer>(filteredCustomers)
 
   return (
     <>
@@ -84,18 +89,50 @@ export default function CustomerList() {
             <table className="customer-table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Contact Person</th>
-                  <th>Phone</th>
-                  <th>Email</th>
-                  <th>GST Number</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'firstName')}
+                    onClick={() => handleSort('firstName')}
+                  >
+                    First Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'lastName')}
+                    onClick={() => handleSort('lastName')}
+                  >
+                    Last Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'contactPerson')}
+                    onClick={() => handleSort('contactPerson')}
+                  >
+                    Contact Person
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'phone')}
+                    onClick={() => handleSort('phone')}
+                  >
+                    Phone
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'email')}
+                    onClick={() => handleSort('email')}
+                  >
+                    Email
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'gstNumber')}
+                    onClick={() => handleSort('gstNumber')}
+                  >
+                    GST Number
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredCustomers.map((customer) => (
+                {sortedData.map((customer) => (
                   <tr key={customer.customerId}>
-                    <td>{customer.name}</td>
+                    <td>{customer.firstName}</td>
+                    <td>{customer.lastName}</td>
                     <td>{customer.contactPerson || '-'}</td>
                     <td>{customer.phone || '-'}</td>
                     <td>{customer.email || '-'}</td>
