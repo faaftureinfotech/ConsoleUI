@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import {
   createProject,
@@ -26,6 +26,8 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   const { list: employees } = useAppSelector((s) => s.employees)
   const { showNotification, NotificationContainer } = useNotification()
   const [lastAction, setLastAction] = useState<'create' | 'update' | null>(null)
+  const hasHandledSuccess = useRef(false)
+  const isMounted = useRef(true)
 
   const [formData, setFormData] = useState<ProjectFormData>({
     projectName: '',
@@ -50,6 +52,48 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
     dispatch(fetchCustomers())
     dispatch(fetchEmployees())
   }, [dispatch])
+
+  useEffect(() => {
+    isMounted.current = true
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!loading && lastAction && !hasHandledSuccess.current && isMounted.current) {
+      if (error) {
+        showNotification('error', error)
+        setLastAction(null)
+        hasHandledSuccess.current = false
+      } else if (lastAction === 'create' || lastAction === 'update') {
+        hasHandledSuccess.current = true
+        const message = lastAction === 'create' 
+          ? 'Project created successfully' 
+          : 'Project updated successfully'
+        showNotification('success', message)
+        
+        // Reset lastAction first to prevent re-triggering
+        setLastAction(null)
+        
+        // Call onSuccess after a short delay to ensure state updates are complete
+        if (onSuccess && isMounted.current) {
+          setTimeout(() => {
+            if (isMounted.current && onSuccess) {
+              onSuccess()
+            }
+          }, 300)
+        }
+      }
+    }
+  }, [loading, error, lastAction, onSuccess, showNotification])
+
+  // Reset the success handler flag when lastAction changes
+  useEffect(() => {
+    if (!lastAction) {
+      hasHandledSuccess.current = false
+    }
+  }, [lastAction])
 
   useEffect(() => {
     if (project) {
@@ -116,8 +160,10 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
     }
 
     if (project) {
+      setLastAction('update')
       dispatch(updateProject({ id: project.id, data: formData }))
     } else {
+      setLastAction('create')
       dispatch(createProject(formData))
     }
   }
