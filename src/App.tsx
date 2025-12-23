@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from './store/hooks'
 import { logout } from './store/slices/authSlice'
 import EmployeesPage from './pages/EmployeesPage'
+import EmployeeAllocationPage from './pages/employee/EmployeeAllocationPage'
+import UserPage from './pages/user/UserPage'
 import QuotationPage from './pages/QuotationPage'
 import DashboardPage from './pages/dashboard/DashboardPage'
 import CustomersPage from './pages/CustomersPage'
@@ -10,6 +12,8 @@ import ProjectsPage from './pages/ProjectsPage'
 import SuppliersPage from './pages/SuppliersPage'
 import ExpensesPage from './pages/ExpensesPage'
 import PaymentsPage from './pages/PaymentsPage'
+import MasterDataPage from './pages/MasterDataPage'
+import QuotationPrintPage from './pages/quotation/QuotationPrintPage'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
@@ -17,6 +21,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import useNotification from './components/NotificationContainer'
 import './App.css'
 import './styles.css'
+import './styles/table-sort.css'
 
 function AppContent() {
   const dispatch = useAppDispatch()
@@ -67,6 +72,9 @@ function AppContent() {
             <NavLink to='/quotation' className={({ isActive }) => (isActive ? 'active' : '')}>
               Quotation
             </NavLink>
+            <NavLink to='/master-data' className={({ isActive }) => (isActive ? 'active' : '')}>
+              Settings
+            </NavLink>
           </div>
           <div className="nav-user">
             <span className="user-name">{user?.name || user?.email}</span>
@@ -105,6 +113,22 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <EmployeesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/employee-allocations'
+            element={
+              <ProtectedRoute>
+                <EmployeeAllocationPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/users'
+            element={
+              <ProtectedRoute>
+                <UserPage />
               </ProtectedRoute>
             }
           />
@@ -155,6 +179,18 @@ function AppContent() {
                 <QuotationPage />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path='/master-data'
+            element={
+              <ProtectedRoute>
+                <MasterDataPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/quotation/print'
+            element={<QuotationPrintPage />}
           />
         </Routes>
       </div>

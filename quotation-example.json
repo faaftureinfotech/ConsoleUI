@@ -1,0 +1,298 @@
+{
+  "quotation": {
+    "id": 1,
+    "quotationNumber": "QT-2024-001",
+    "customerId": 1,
+    "customerName": "ABC Construction Ltd",
+    "projectId": 1,
+    "projectName": "Residential Building Project",
+    "quotationDate": "2024-01-15",
+    "validUntil": "2024-02-15",
+    "subTotal": 1250000.00,
+    "taxPercentage": 18,
+    "taxAmount": 225000.00,
+    "totalAmount": 1475000.00,
+    "notes": "Quotation valid for 30 days. Terms and conditions apply.",
+    "status": "Draft",
+    "items": [
+      {
+        "tempId": "uuid-1",
+        "itemId": 1,
+        "description": "Excavation Work",
+        "unit": "m3",
+        "quantity": 150.00,
+        "rate": 120.00,
+        "amount": 18000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "tempId": "uuid-2",
+        "itemId": 2,
+        "description": "PCC Footing",
+        "unit": "Nos",
+        "quantity": 20.00,
+        "rate": 350.00,
+        "amount": 7000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "tempId": "uuid-3",
+        "itemId": 3,
+        "description": "Brick Masonry",
+        "unit": "m3",
+        "quantity": 200.00,
+        "rate": 900.00,
+        "amount": 180000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "tempId": "uuid-4",
+        "itemId": 4,
+        "description": "Floor Tiles",
+        "unit": "Sqft",
+        "quantity": 1200.00,
+        "rate": 45.00,
+        "amount": 54000.00,
+        "phase": "First Floor"
+      },
+      {
+        "tempId": "uuid-5",
+        "itemId": 5,
+        "description": "Exterior Paint",
+        "unit": "Meter",
+        "quantity": 500.00,
+        "rate": 25.00,
+        "amount": 12500.00,
+        "phase": "First Floor"
+      },
+      {
+        "tempId": "uuid-6",
+        "itemId": 1,
+        "description": "Excavation Work",
+        "unit": "m3",
+        "quantity": 100.00,
+        "rate": 120.00,
+        "amount": 12000.00,
+        "phase": "Second Floor"
+      },
+      {
+        "tempId": "uuid-7",
+        "itemId": 3,
+        "description": "Brick Masonry",
+        "unit": "m3",
+        "quantity": 150.00,
+        "rate": 900.00,
+        "amount": 135000.00,
+        "phase": "Second Floor"
+      },
+      {
+        "tempId": "uuid-8",
+        "itemId": 4,
+        "description": "Floor Tiles",
+        "unit": "Sqft",
+        "quantity": 800.00,
+        "rate": 45.00,
+        "amount": 36000.00,
+        "phase": "Roof"
+      }
+    ]
+  },
+  "units": [
+    { "id": 1, "name": "Sqft" },
+    { "id": 2, "name": "m3" },
+    { "id": 3, "name": "Nos" },
+    { "id": 4, "name": "Kg" },
+    { "id": 5, "name": "Meter" }
+  ],
+  "categories": [
+    { "id": 1, "name": "Civil" },
+    { "id": 2, "name": "Electrical" },
+    { "id": 3, "name": "Plumbing" },
+    { "id": 4, "name": "Painting" },
+    { "id": 5, "name": "Flooring" }
+  ],
+  "materials": [
+    { "id": 1, "name": "Cement", "defaultUnitId": 3, "defaultRate": 350 },
+    { "id": 2, "name": "Sand", "defaultUnitId": 2, "defaultRate": 900 },
+    { "id": 3, "name": "Steel", "defaultUnitId": 4, "defaultRate": 65 },
+    { "id": 4, "name": "Tiles", "defaultUnitId": 1, "defaultRate": 45 },
+    { "id": 5, "name": "Paint", "defaultUnitId": 5, "defaultRate": 25 }
+  ],
+  "boqMasters": [
+    {
+      "id": 1,
+      "name": "Excavation Work",
+      "categoryId": 1,
+      "defaultUnitId": 2,
+      "defaultRate": 120,
+      "description": "Excavation for foundation"
+    },
+    {
+      "id": 2,
+      "name": "PCC Footing",
+      "categoryId": 1,
+      "defaultUnitId": 3,
+      "defaultRate": 350,
+      "description": "Plain cement concrete"
+    },
+    {
+      "id": 3,
+      "name": "Brick Masonry",
+      "categoryId": 1,
+      "defaultUnitId": 2,
+      "defaultRate": 900,
+      "description": "Standard 9 inch walls"
+    },
+    {
+      "id": 4,
+      "name": "Floor Tiles",
+      "categoryId": 5,
+      "defaultUnitId": 1,
+      "defaultRate": 45,
+      "description": "Ceramic or vitrified tiles"
+    },
+    {
+      "id": 5,
+      "name": "Exterior Paint",
+      "categoryId": 4,
+      "defaultUnitId": 5,
+      "defaultRate": 25,
+      "description": "Weather coat exterior emulsion"
+    }
+  ],
+  "phases": [
+    "Ground Floor",
+    "First Floor",
+    "Second Floor",
+    "Third Floor",
+    "Fourth Floor",
+    "Fifth Floor",
+    "Basement",
+    "Roof",
+    "Common Areas",
+    "External Works"
+  ],
+  "quotationFormData": {
+    "customerId": 1,
+    "projectId": 1,
+    "quotationDate": "2024-01-15",
+    "validUntil": "2024-02-15",
+    "taxPercentage": 18,
+    "notes": "Quotation valid for 30 days. Terms and conditions apply.",
+    "status": "Draft"
+  },
+  "groupedByPhase": {
+    "Ground Floor": {
+      "items": [
+        {
+          "tempId": "uuid-1",
+          "itemId": 1,
+          "description": "Excavation Work",
+          "unit": "m3",
+          "quantity": 150.00,
+          "rate": 120.00,
+          "amount": 18000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "tempId": "uuid-2",
+          "itemId": 2,
+          "description": "PCC Footing",
+          "unit": "Nos",
+          "quantity": 20.00,
+          "rate": 350.00,
+          "amount": 7000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "tempId": "uuid-3",
+          "itemId": 3,
+          "description": "Brick Masonry",
+          "unit": "m3",
+          "quantity": 200.00,
+          "rate": 900.00,
+          "amount": 180000.00,
+          "phase": "Ground Floor"
+        }
+      ],
+      "total": 205000.00
+    },
+    "First Floor": {
+      "items": [
+        {
+          "tempId": "uuid-4",
+          "itemId": 4,
+          "description": "Floor Tiles",
+          "unit": "Sqft",
+          "quantity": 1200.00,
+          "rate": 45.00,
+          "amount": 54000.00,
+          "phase": "First Floor"
+        },
+        {
+          "tempId": "uuid-5",
+          "itemId": 5,
+          "description": "Exterior Paint",
+          "unit": "Meter",
+          "quantity": 500.00,
+          "rate": 25.00,
+          "amount": 12500.00,
+          "phase": "First Floor"
+        }
+      ],
+      "total": 66500.00
+    },
+    "Second Floor": {
+      "items": [
+        {
+          "tempId": "uuid-6",
+          "itemId": 1,
+          "description": "Excavation Work",
+          "unit": "m3",
+          "quantity": 100.00,
+          "rate": 120.00,
+          "amount": 12000.00,
+          "phase": "Second Floor"
+        },
+        {
+          "tempId": "uuid-7",
+          "itemId": 3,
+          "description": "Brick Masonry",
+          "unit": "m3",
+          "quantity": 150.00,
+          "rate": 900.00,
+          "amount": 135000.00,
+          "phase": "Second Floor"
+        }
+      ],
+      "total": 147000.00
+    },
+    "Roof": {
+      "items": [
+        {
+          "tempId": "uuid-8",
+          "itemId": 4,
+          "description": "Floor Tiles",
+          "unit": "Sqft",
+          "quantity": 800.00,
+          "rate": 45.00,
+          "amount": 36000.00,
+          "phase": "Roof"
+        }
+      ],
+      "total": 36000.00
+    }
+  },
+  "summary": {
+    "subTotal": 454500.00,
+    "taxPercentage": 18,
+    "taxAmount": 81810.00,
+    "totalAmount": 536310.00,
+    "phaseBreakdown": {
+      "Ground Floor": 205000.00,
+      "First Floor": 66500.00,
+      "Second Floor": 147000.00,
+      "Roof": 36000.00
+    }
+}
+

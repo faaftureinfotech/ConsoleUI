@@ -7,6 +7,8 @@ import {
   Project
 } from '../../store/slices/projectSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './ProjectList.css'
 
 export default function ProjectList() {
@@ -34,6 +36,8 @@ export default function ProjectList() {
     project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     project.location?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Project>(filteredProjects)
 
   return (
     <>
@@ -65,17 +69,47 @@ export default function ProjectList() {
             <table className="project-table">
               <thead>
                 <tr>
-                  <th>Project Name</th>
-                  <th>Customer</th>
-                  <th>Type</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                  <th>Contract Value</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'projectName')}
+                    onClick={() => handleSort('projectName')}
+                  >
+                    Project Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'customerName')}
+                    onClick={() => handleSort('customerName')}
+                  >
+                    Customer
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'projectType')}
+                    onClick={() => handleSort('projectType')}
+                  >
+                    Type
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'location')}
+                    onClick={() => handleSort('location')}
+                  >
+                    Location
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'status')}
+                    onClick={() => handleSort('status')}
+                  >
+                    Status
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'contractValue')}
+                    onClick={() => handleSort('contractValue')}
+                  >
+                    Contract Value
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredProjects.map((project) => (
+                {sortedData.map((project) => (
                   <tr key={project.id}>
                     <td>{project.projectName}</td>
                     <td>{project.customerName || '-'}</td>

@@ -1,0 +1,297 @@
+{
+  "createQuotation": {
+    "description": "POST /api/quotations - Create a new quotation",
+    "payload": {
+      "customerId": 1,
+      "projectId": 1,
+      "quotationDate": "2024-01-15",
+      "validUntil": "2024-02-15",
+      "taxPercentage": 18,
+      "notes": "Quotation valid for 30 days. Terms and conditions apply.",
+      "status": "Draft",
+      "items": [
+        {
+          "itemId": 1,
+          "description": "Excavation Work",
+          "unit": "m3",
+          "quantity": 150.00,
+          "rate": 120.00,
+          "amount": 18000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "itemId": 2,
+          "description": "PCC Footing",
+          "unit": "Nos",
+          "quantity": 20.00,
+          "rate": 350.00,
+          "amount": 7000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "itemId": 3,
+          "description": "Brick Masonry",
+          "unit": "m3",
+          "quantity": 200.00,
+          "rate": 900.00,
+          "amount": 180000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "itemId": 4,
+          "description": "Floor Tiles",
+          "unit": "Sqft",
+          "quantity": 1200.00,
+          "rate": 45.00,
+          "amount": 54000.00,
+          "phase": "First Floor"
+        },
+        {
+          "itemId": 5,
+          "description": "Exterior Paint",
+          "unit": "Meter",
+          "quantity": 500.00,
+          "rate": 25.00,
+          "amount": 12500.00,
+          "phase": "First Floor"
+        },
+        {
+          "itemId": 1,
+          "description": "Excavation Work",
+          "unit": "m3",
+          "quantity": 100.00,
+          "rate": 120.00,
+          "amount": 12000.00,
+          "phase": "Second Floor"
+        },
+        {
+          "itemId": 3,
+          "description": "Brick Masonry",
+          "unit": "m3",
+          "quantity": 150.00,
+          "rate": 900.00,
+          "amount": 135000.00,
+          "phase": "Second Floor"
+        },
+        {
+          "itemId": 4,
+          "description": "Floor Tiles",
+          "unit": "Sqft",
+          "quantity": 800.00,
+          "rate": 45.00,
+          "amount": 36000.00,
+          "phase": "Roof"
+        }
+      ],
+      "subTotal": 454500.00,
+      "taxAmount": 81810.00,
+      "totalAmount": 536310.00
+    }
+  },
+  "updateQuotation": {
+    "description": "PUT /api/quotations/{id} - Update an existing quotation",
+    "payload": {
+      "customerId": 1,
+      "projectId": 1,
+      "quotationDate": "2024-01-15",
+      "validUntil": "2024-02-15",
+      "taxPercentage": 18,
+      "notes": "Updated quotation notes",
+      "status": "Sent",
+      "items": [
+        {
+          "itemId": 1,
+          "description": "Excavation Work",
+          "unit": "m3",
+          "quantity": 150.00,
+          "rate": 120.00,
+          "amount": 18000.00,
+          "phase": "Ground Floor"
+        },
+        {
+          "itemId": 2,
+          "description": "PCC Footing",
+          "unit": "Nos",
+          "quantity": 25.00,
+          "rate": 350.00,
+          "amount": 8750.00,
+          "phase": "Ground Floor"
+        }
+      ],
+      "subTotal": 26750.00,
+      "taxAmount": 4815.00,
+      "totalAmount": 31565.00
+    }
+  },
+  "createBOQMaster": {
+    "description": "POST /api/BOQMaster - Create a new BOQ Master",
+    "payload": {
+      "name": "Excavation Work",
+      "categoryId": 1,
+      "defaultUnitId": 2,
+      "defaultRate": 120.00,
+      "description": "Excavation for foundation"
+    }
+  },
+  "updateBOQMaster": {
+    "description": "PUT /api/BOQMaster/{id} - Update an existing BOQ Master",
+    "payload": {
+      "name": "Excavation Work - Updated",
+      "categoryId": 1,
+      "defaultUnitId": 2,
+      "defaultRate": 130.00,
+      "description": "Excavation for foundation with updated rate"
+    }
+  },
+  "createUnit": {
+    "description": "POST /api/units - Create a new unit",
+    "payload": {
+      "name": "Sqft"
+    }
+  },
+  "updateUnit": {
+    "description": "PUT /api/units/{id} - Update an existing unit",
+    "payload": {
+      "name": "Square Feet"
+    }
+  },
+  "createCategory": {
+    "description": "POST /api/categories - Create a new category",
+    "payload": {
+      "name": "Civil"
+    }
+  },
+  "updateCategory": {
+    "description": "PUT /api/categories/{id} - Update an existing category",
+    "payload": {
+      "name": "Civil Works"
+    }
+  },
+  "createMaterial": {
+    "description": "POST /api/materials - Create a new material",
+    "payload": {
+      "name": "Cement",
+      "defaultUnitId": 3,
+      "defaultRate": 350.00
+    }
+  },
+  "updateMaterial": {
+    "description": "PUT /api/materials/{id} - Update an existing material",
+    "payload": {
+      "name": "Premium Cement",
+      "defaultUnitId": 3,
+      "defaultRate": 380.00
+    }
+  },
+  "exampleQuotationRequest": {
+    "description": "Complete example for creating a quotation with multiple phases",
+    "customerId": 1,
+    "projectId": 1,
+    "quotationDate": "2024-01-15",
+    "validUntil": "2024-02-15",
+    "taxPercentage": 18,
+    "notes": "Multi-floor residential building quotation",
+    "status": "Draft",
+    "items": [
+      {
+        "itemId": 1,
+        "description": "Excavation Work",
+        "unit": "m3",
+        "quantity": 150.00,
+        "rate": 120.00,
+        "amount": 18000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "itemId": 2,
+        "description": "PCC Footing",
+        "unit": "Nos",
+        "quantity": 20.00,
+        "rate": 350.00,
+        "amount": 7000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "itemId": 3,
+        "description": "Brick Masonry",
+        "unit": "m3",
+        "quantity": 200.00,
+        "rate": 900.00,
+        "amount": 180000.00,
+        "phase": "Ground Floor"
+      },
+      {
+        "itemId": 4,
+        "description": "Floor Tiles",
+        "unit": "Sqft",
+        "quantity": 1200.00,
+        "rate": 45.00,
+        "amount": 54000.00,
+        "phase": "First Floor"
+      },
+      {
+        "itemId": 5,
+        "description": "Exterior Paint",
+        "unit": "Meter",
+        "quantity": 500.00,
+        "rate": 25.00,
+        "amount": 12500.00,
+        "phase": "First Floor"
+      },
+      {
+        "itemId": 1,
+        "description": "Excavation Work",
+        "unit": "m3",
+        "quantity": 100.00,
+        "rate": 120.00,
+        "amount": 12000.00,
+        "phase": "Second Floor"
+      },
+      {
+        "itemId": 3,
+        "description": "Brick Masonry",
+        "unit": "m3",
+        "quantity": 150.00,
+        "rate": 900.00,
+        "amount": 135000.00,
+        "phase": "Second Floor"
+      },
+      {
+        "itemId": 4,
+        "description": "Floor Tiles",
+        "unit": "Sqft",
+        "quantity": 800.00,
+        "rate": 45.00,
+        "amount": 36000.00,
+        "phase": "Roof"
+      }
+    ],
+    "subTotal": 454500.00,
+    "taxAmount": 81810.00,
+    "totalAmount": 536310.00
+  },
+  "notes": {
+    "quotationItems": {
+      "itemId": "Reference to BOQ Master ID",
+      "description": "Item description (from BOQ Master or custom)",
+      "unit": "Unit name (e.g., 'Sqft', 'm3', 'Nos')",
+      "quantity": "Numeric value, can be decimal",
+      "rate": "Numeric value, can be decimal",
+      "amount": "Calculated as quantity × rate",
+      "phase": "One of: 'Ground Floor', 'First Floor', 'Second Floor', 'Third Floor', 'Fourth Floor', 'Fifth Floor', 'Basement', 'Roof', 'Common Areas', 'External Works'"
+    },
+    "calculations": {
+      "subTotal": "Sum of all item amounts",
+      "taxAmount": "subTotal × (taxPercentage / 100)",
+      "totalAmount": "subTotal + taxAmount"
+    },
+    "statusValues": [
+      "Draft",
+      "Sent",
+      "Accepted",
+      "Rejected",
+      "Expired"
+    ]
+  }
+}
+

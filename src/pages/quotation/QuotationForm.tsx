@@ -9,12 +9,17 @@ import {
   updateBoqItem,
   clearBoqItems,
   QuotationFormData,
-  Quotation
+  Quotation,
+  Phase
 } from '../../store/slices/quotationSlice'
 import { fetchCustomers } from '../../store/slices/customerSlice'
 import { fetchProjects } from '../../store/slices/projectSlice'
+import { fetchUnits } from '../../store/slices/unitsSlice'
 import ConstructionItemSelector from '../ConstructionItemSelector'
+import BoqMasterSelector from './BoqMasterSelector'
 import useNotification from '../../components/NotificationContainer'
+import BoqMasterModal from './BoqMasterModal'
+import { addBoqItemFromMaster } from '../../store/slices/quotationSlice'
 import './QuotationForm.css'
 
 interface QuotationFormProps {
@@ -27,11 +32,13 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
   const { items, loading, error } = useAppSelector((s) => s.quotation)
   const { list: customers } = useAppSelector((s) => s.customer)
   const { list: projects } = useAppSelector((s) => s.project)
+  const { list: units } = useAppSelector((s) => s.units)
   const { showNotification, NotificationContainer } = useNotification()
   const [lastAction, setLastAction] = useState<'create' | 'update' | null>(null)
-  const [showBoqModal, setShowBoqModal] = useState(false)
+  const [showBoqMasterModal, setShowBoqMasterModal] = useState(false)
 
   const [formData, setFormData] = useState<QuotationFormData>({
+    quotationNumber: '',
     customerId: 0,
     projectId: undefined,
     quotationDate: new Date().toISOString().split('T')[0],
@@ -42,10 +49,25 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
   })
 
   const [errors, setErrors] = useState<Partial<Record<keyof QuotationFormData, string>>>({})
+  const [selectedPhase, setSelectedPhase] = useState<Phase>('Ground Floor')
+
+  const phases: Phase[] = [
+    'Ground Floor',
+    'First Floor',
+    'Second Floor',
+    'Third Floor',
+    'Fourth Floor',
+    'Fifth Floor',
+    'Basement',
+    'Roof',
+    'Common Areas',
+    'External Works'
+  ]
 
   useEffect(() => {
     dispatch(fetchCustomers())
     dispatch(fetchProjects())
+    dispatch(fetchUnits())
   }, [dispatch])
 
   useEffect(() => {
@@ -70,6 +92,7 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
   useEffect(() => {
     if (quotation) {
       setFormData({
+        quotationNumber: quotation.quotationNumber || '',
         customerId: quotation.customerId || 0,
         projectId: quotation.projectId,
         quotationDate: quotation.quotationDate || new Date().toISOString().split('T')[0],
@@ -150,8 +173,25 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
       <NotificationContainer />
       <form className="quotation-form" onSubmit={handleSubmit}>
         <div className="form-section">
-          <h3>Quotation Header</h3>
+          <div className="quotation-header-top">
+            <h3>Quotation Header</h3>
+          </div>
           <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="quotationNumber">
+                Quotation Number <span className="required">*</span>
+              </label>
+              <input
+                type="text"
+                id="quotationNumber"
+                value={formData.quotationNumber || ''}
+                onChange={(e) => handleChange('quotationNumber', e.target.value)}
+                className={errors.quotationNumber ? 'error' : ''}
+                placeholder="Enter quotation number"
+              />
+              {errors.quotationNumber && <span className="error-message">{errors.quotationNumber}</span>}
+            </div>
+
             <div className="form-group">
               <label htmlFor="customerId">Customer <span className="required">*</span></label>
               <select
@@ -163,7 +203,7 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
                 <option value={0}>Select Customer</option>
                 {customers.map((c) => (
                   <option key={c.customerId} value={c.customerId}>
-                    {c.name}
+                    {c.firstName} {c.lastName}
                   </option>
                 ))}
               </select>
@@ -262,89 +302,185 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
             <h3>BOQ Items</h3>
             <button
               type="button"
-              className="btn-icon"
-              onClick={() => setShowBoqModal(true)}
-              title="Manage BOQ Items"
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                setShowBoqMasterModal(true)
+              }}
+              title="Manage BOQ Masters"
             >
-              ✏️
+              Manage BOQ Masters
             </button>
           </div>
-          <ConstructionItemSelector
-            onItemSelect={(item) => {
-              dispatch(addBoqItem(item))
-            }}
-          />
-
-          {items.length > 0 && (
-            <div className="boq-table-wrapper">
-              <table className="boq-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Description</th>
-                    <th>Unit</th>
-                    <th>Qty</th>
-                    <th>Rate</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((row, index) => (
-                    <tr key={row.tempId}>
-                      <td>{index + 1}</td>
-                      <td>{row.description}</td>
-                      <td>{row.unit}</td>
-                      <td>
-                        <input
-                          type="number"
-                          value={row.quantity}
-                          onChange={(e) =>
-                            dispatch(
-                              updateBoqItem({
-                                tempId: row.tempId,
-                                quantity: Number(e.target.value)
-                              })
-                            )
-                          }
-                          min="0.01"
-                          step="0.01"
-                          className="boq-input"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={row.rate}
-                          onChange={(e) =>
-                            dispatch(
-                              updateBoqItem({
-                                tempId: row.tempId,
-                                rate: Number(e.target.value)
-                              })
-                            )
-                          }
-                          min="0"
-                          step="0.01"
-                          className="boq-input"
-                        />
-                      </td>
-                      <td className="amount-cell">₹{row.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-delete"
-                          onClick={() => dispatch(removeBoqItem(row.tempId))}
-                        >
-                          ✕
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="boq-selector-tabs">
+            <div className="selector-tabs">
+              <button
+                type="button"
+                className={`selector-tab ${true ? 'active' : ''}`}
+                onClick={() => {}}
+              >
+                BOQ Masters
+              </button>
             </div>
-          )}
+            <div className="boq-phase-selector">
+              <label htmlFor="phase-select">Assign to Phase:</label>
+              <select
+                id="phase-select"
+                value={selectedPhase}
+                onChange={(e) => setSelectedPhase(e.target.value as Phase)}
+                className="phase-select"
+              >
+                {phases.map((phase) => (
+                  <option key={phase} value={phase}>
+                    {phase}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <BoqMasterSelector
+              onBoqMasterSelect={(master) => {
+                const unit = units.find((u: { id: number; name: string }) => u.id === master.defaultUnitId)
+                const unitName = unit ? unit.name : 'Nos'
+                dispatch(
+                  addBoqItemFromMaster({
+                    master: {
+                      id: master.id,
+                      name: master.name,
+                      defaultUnitId: master.defaultUnitId,
+                      defaultRate: master.defaultRate,
+                      description: master.description
+                    },
+                    unitName,
+                    phase: selectedPhase
+                  })
+                )
+              }}
+            />
+          </div>
+
+          {items.length > 0 && (() => {
+            // Group items by phase
+            const itemsByPhase = items.reduce((acc, item) => {
+              const phase = item.phase || 'Ground Floor'
+              if (!acc[phase]) {
+                acc[phase] = []
+              }
+              acc[phase].push(item)
+              return acc
+            }, {} as Record<Phase, typeof items>)
+
+            // Calculate totals per phase
+            const phaseTotals = Object.entries(itemsByPhase).reduce((acc, [phase, phaseItems]) => {
+              acc[phase] = phaseItems.reduce((sum, item) => sum + item.amount, 0)
+              return acc
+            }, {} as Record<string, number>)
+
+            // Order phases
+            const orderedPhases = phases.filter(phase => itemsByPhase[phase]?.length > 0)
+
+            return (
+              <div className="boq-table-wrapper">
+                {orderedPhases.map((phase) => {
+                  const phaseItems = itemsByPhase[phase]
+                  const phaseTotal = phaseTotals[phase] || 0
+                  return (
+                    <div key={phase} className="boq-phase-section">
+                      <div className="boq-phase-header">
+                        <h4>{phase}</h4>
+                        <span className="phase-total">Phase Total: ₹{phaseTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                      </div>
+                      <table className="boq-table">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Unit</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Phase</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {phaseItems.map((row, index) => (
+                            <tr key={row.tempId}>
+                              <td>{index + 1}</td>
+                              <td>{row.description}</td>
+                              <td>{row.unit}</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value={row.quantity}
+                                  onChange={(e) =>
+                                    dispatch(
+                                      updateBoqItem({
+                                        tempId: row.tempId,
+                                        quantity: Number(e.target.value)
+                                      })
+                                    )
+                                  }
+                                  min="0.01"
+                                  step="0.01"
+                                  className="boq-input"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="number"
+                                  value={row.rate}
+                                  onChange={(e) =>
+                                    dispatch(
+                                      updateBoqItem({
+                                        tempId: row.tempId,
+                                        rate: Number(e.target.value)
+                                      })
+                                    )
+                                  }
+                                  min="0"
+                                  step="0.01"
+                                  className="boq-input"
+                                />
+                              </td>
+                              <td className="amount-cell">₹{row.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                              <td>
+                                <select
+                                  value={row.phase || 'Ground Floor'}
+                                  onChange={(e) =>
+                                    dispatch(
+                                      updateBoqItem({
+                                        tempId: row.tempId,
+                                        phase: e.target.value as Phase
+                                      })
+                                    )
+                                  }
+                                  className="boq-phase-select"
+                                >
+                                  {phases.map((p) => (
+                                    <option key={p} value={p}>
+                                      {p}
+                                    </option>
+                                  ))}
+                                </select>
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-delete"
+                                  onClick={() => dispatch(removeBoqItem(row.tempId))}
+                                >
+                                  ✕
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
 
           <div className="quotation-summary">
             <div className="summary-row">
@@ -381,125 +517,11 @@ export default function QuotationForm({ quotation, onSuccess }: QuotationFormPro
         </div>
       </form>
 
-      {/* BOQ Management Modal */}
-      {showBoqModal && (
-        <div className="modal-overlay" onClick={() => setShowBoqModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Manage BOQ Items</h2>
-              <button
-                type="button"
-                className="modal-close"
-                onClick={() => setShowBoqModal(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="boq-modal-section">
-                <h4>Add New Item</h4>
-                <ConstructionItemSelector
-                  onItemSelect={(item) => {
-                    dispatch(addBoqItem(item))
-                  }}
-                />
-              </div>
-
-              {items.length > 0 && (
-                <div className="boq-modal-section">
-                  <h4>Current Items ({items.length})</h4>
-                  <div className="boq-table-wrapper">
-                    <table className="boq-table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Description</th>
-                          <th>Unit</th>
-                          <th>Qty</th>
-                          <th>Rate</th>
-                          <th>Amount</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((row, index) => (
-                          <tr key={row.tempId}>
-                            <td>{index + 1}</td>
-                            <td>{row.description}</td>
-                            <td>{row.unit}</td>
-                            <td>
-                              <input
-                                type="number"
-                                value={row.quantity}
-                                onChange={(e) =>
-                                  dispatch(
-                                    updateBoqItem({
-                                      tempId: row.tempId,
-                                      quantity: Number(e.target.value)
-                                    })
-                                  )
-                                }
-                                min="0.01"
-                                step="0.01"
-                                className="boq-input"
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                value={row.rate}
-                                onChange={(e) =>
-                                  dispatch(
-                                    updateBoqItem({
-                                      tempId: row.tempId,
-                                      rate: Number(e.target.value)
-                                    })
-                                  )
-                                }
-                                min="0"
-                                step="0.01"
-                                className="boq-input"
-                              />
-                            </td>
-                            <td className="amount-cell">
-                              ₹{row.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-delete"
-                                onClick={() => dispatch(removeBoqItem(row.tempId))}
-                              >
-                                ✕
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {items.length === 0 && (
-                <div className="boq-empty-state">
-                  <p>No BOQ items added yet. Use the selector above to add items.</p>
-                </div>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => setShowBoqModal(false)}
-              >
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* BOQ Master Management Modal */}
+      <BoqMasterModal
+        isOpen={showBoqMasterModal}
+        onClose={() => setShowBoqMasterModal(false)}
+      />
     </>
   )
 }

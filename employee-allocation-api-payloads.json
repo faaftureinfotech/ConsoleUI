@@ -1,0 +1,282 @@
+{
+  "employeeAllocationApi": {
+    "description": "API payloads and responses for Employee/Contractor Allocation management",
+    "baseUrl": "/api/EmployeeAllocation",
+    
+    "createEmployeeAllocation": {
+      "endpoint": "POST /api/EmployeeAllocation",
+      "description": "Create a new employee/contractor allocation",
+      "request": {
+        "employeeId": 1,
+        "projectId": 5,
+        "allocationDate": "2024-01-15",
+        "allocationType": "Full Day",
+        "notes": "Assigned to foundation work"
+      },
+      "response": {
+        "id": 1,
+        "employeeId": 1,
+        "employeeName": "John Doe",
+        "employeeType": "Employee",
+        "projectId": 5,
+        "projectName": "Residential Building Project",
+        "allocationDate": "2024-01-15",
+        "allocationType": "Full Day",
+        "notes": "Assigned to foundation work"
+      },
+      "example": {
+        "request": {
+          "employeeId": 2,
+          "projectId": null,
+          "allocationDate": "2024-01-20",
+          "allocationType": "Half Day",
+          "notes": "Morning shift only"
+        },
+        "response": {
+          "id": 2,
+          "employeeId": 2,
+          "employeeName": "Jane Smith",
+          "employeeType": "Contractor",
+          "projectId": null,
+          "projectName": null,
+          "allocationDate": "2024-01-20",
+          "allocationType": "Half Day",
+          "notes": "Morning shift only"
+        }
+      }
+    },
+    
+    "getAllEmployeeAllocations": {
+      "endpoint": "GET /api/EmployeeAllocation",
+      "description": "Get all employee/contractor allocations",
+      "response": [
+        {
+          "id": 1,
+          "employeeId": 1,
+          "employeeName": "John Doe",
+          "employeeType": "Employee",
+          "projectId": 5,
+          "projectName": "Residential Building Project",
+          "allocationDate": "2024-01-15",
+          "allocationType": "Full Day",
+          "notes": "Assigned to foundation work"
+        },
+        {
+          "id": 2,
+          "employeeId": 2,
+          "employeeName": "Jane Smith",
+          "employeeType": "Contractor",
+          "projectId": null,
+          "projectName": null,
+          "allocationDate": "2024-01-20",
+          "allocationType": "Half Day",
+          "notes": "Morning shift only"
+        },
+        {
+          "id": 3,
+          "employeeId": 3,
+          "employeeName": "Mike Johnson",
+          "employeeType": "Employee",
+          "projectId": 6,
+          "projectName": "Commercial Complex",
+          "allocationDate": "2024-01-15",
+          "allocationType": "Full Day",
+          "notes": null
+        }
+      ]
+    },
+    
+    "getEmployeeAllocationById": {
+      "endpoint": "GET /api/EmployeeAllocation/{id}",
+      "description": "Get a specific employee allocation by ID",
+      "response": {
+        "id": 1,
+        "employeeId": 1,
+        "employeeName": "John Doe",
+        "employeeType": "Employee",
+        "projectId": 5,
+        "projectName": "Residential Building Project",
+        "allocationDate": "2024-01-15",
+        "allocationType": "Full Day",
+        "notes": "Assigned to foundation work"
+      }
+    },
+    
+    "updateEmployeeAllocation": {
+      "endpoint": "PUT /api/EmployeeAllocation/{id}",
+      "description": "Update an existing employee allocation",
+      "request": {
+        "employeeId": 1,
+        "projectId": 5,
+        "allocationDate": "2024-01-16",
+        "allocationType": "Half Day",
+        "notes": "Updated: Afternoon shift only"
+      },
+      "response": {
+        "id": 1,
+        "employeeId": 1,
+        "employeeName": "John Doe",
+        "employeeType": "Employee",
+        "projectId": 5,
+        "projectName": "Residential Building Project",
+        "allocationDate": "2024-01-16",
+        "allocationType": "Half Day",
+        "notes": "Updated: Afternoon shift only"
+      },
+      "example": {
+        "request": {
+          "employeeId": 2,
+          "projectId": null,
+          "allocationDate": "2024-01-21",
+          "allocationType": "Full Day",
+          "notes": "Changed to full day"
+        },
+        "response": {
+          "id": 2,
+          "employeeId": 2,
+          "employeeName": "Jane Smith",
+          "employeeType": "Contractor",
+          "projectId": null,
+          "projectName": null,
+          "allocationDate": "2024-01-21",
+          "allocationType": "Full Day",
+          "notes": "Changed to full day"
+        }
+      }
+    },
+    
+    "deleteEmployeeAllocation": {
+      "endpoint": "DELETE /api/EmployeeAllocation/{id}",
+      "description": "Delete an employee allocation",
+      "request": {
+        "id": 1
+      },
+      "response": {
+        "success": true,
+        "message": "Employee allocation deleted successfully"
+      },
+      "alternativeResponse": "No content (204) or Ok (200) with no body"
+    },
+    
+    "dataTypes": {
+      "EmployeeAllocation": {
+        "id": "integer (required, auto-generated)",
+        "employeeId": "integer (required)",
+        "employeeName": "string (optional, populated from Employee table)",
+        "employeeType": "string (optional, 'Employee' or 'Contractor', populated from Employee table)",
+        "projectId": "integer (optional, nullable)",
+        "projectName": "string (optional, populated from Project table)",
+        "allocationDate": "date (required, format: YYYY-MM-DD)",
+        "allocationType": "string (required, 'Full Day' or 'Half Day')",
+        "notes": "string (optional, nullable)"
+      },
+      "CreateEmployeeAllocationDto": {
+        "employeeId": "integer (required)",
+        "projectId": "integer (optional, nullable)",
+        "allocationDate": "date (required, format: YYYY-MM-DD)",
+        "allocationType": "string (required, 'Full Day' or 'Half Day')",
+        "notes": "string (optional, nullable)"
+      },
+      "UpdateEmployeeAllocationDto": {
+        "employeeId": "integer (required)",
+        "projectId": "integer (optional, nullable)",
+        "allocationDate": "date (required, format: YYYY-MM-DD)",
+        "allocationType": "string (required, 'Full Day' or 'Half Day')",
+        "notes": "string (optional, nullable)"
+      }
+    },
+    
+    "validationRules": {
+      "employeeId": {
+        "required": true,
+        "type": "integer",
+        "minValue": 1,
+        "message": "Employee ID is required and must be greater than 0"
+      },
+      "projectId": {
+        "required": false,
+        "type": "integer",
+        "nullable": true,
+        "message": "Project ID is optional"
+      },
+      "allocationDate": {
+        "required": true,
+        "type": "date",
+        "format": "YYYY-MM-DD",
+        "message": "Allocation date is required"
+      },
+      "allocationType": {
+        "required": true,
+        "type": "string",
+        "allowedValues": ["Full Day", "Half Day"],
+        "message": "Allocation type must be either 'Full Day' or 'Half Day'"
+      },
+      "notes": {
+        "required": false,
+        "type": "string",
+        "maxLength": 1000,
+        "nullable": true,
+        "message": "Notes are optional"
+      }
+    },
+    
+    "errorResponses": {
+      "400": {
+        "message": "Bad Request - Validation failed",
+        "example": {
+          "errors": {
+            "employeeId": ["Employee ID is required"],
+            "allocationDate": ["Allocation date is required"],
+            "allocationType": ["Allocation type must be either 'Full Day' or 'Half Day'"]
+          }
+        }
+      },
+      "404": {
+        "message": "Not Found - Employee allocation not found",
+        "example": {
+          "message": "Employee allocation with ID 999 not found"
+        }
+      },
+      "500": {
+        "message": "Internal Server Error",
+        "example": {
+          "message": "An error occurred while processing your request"
+        }
+      }
+    },
+    
+    "exampleScenarios": {
+      "scenario1": {
+        "description": "Create full day allocation for employee on a project",
+        "request": {
+          "employeeId": 1,
+          "projectId": 5,
+          "allocationDate": "2024-01-15",
+          "allocationType": "Full Day",
+          "notes": "Assigned to foundation work"
+        }
+      },
+      "scenario2": {
+        "description": "Create half day allocation for contractor without project",
+        "request": {
+          "employeeId": 2,
+          "projectId": null,
+          "allocationDate": "2024-01-20",
+          "allocationType": "Half Day",
+          "notes": "Morning shift only"
+        }
+      },
+      "scenario3": {
+        "description": "Update allocation from half day to full day",
+        "request": {
+          "employeeId": 2,
+          "projectId": 5,
+          "allocationDate": "2024-01-20",
+          "allocationType": "Full Day",
+          "notes": "Changed to full day assignment"
+        }
+      }
+    }
+  }
+}
+

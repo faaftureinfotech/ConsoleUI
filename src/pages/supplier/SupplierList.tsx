@@ -7,6 +7,8 @@ import {
   Supplier
 } from '../../store/slices/supplierSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './SupplierList.css'
 
 export default function SupplierList() {
@@ -36,6 +38,8 @@ export default function SupplierList() {
     supplier.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     supplier.contactPerson?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Supplier>(filteredSuppliers)
 
   return (
     <>
@@ -67,18 +71,53 @@ export default function SupplierList() {
             <table className="supplier-table">
               <thead>
                 <tr>
-                  <th>Supplier Name</th>
-                  <th>Contact Person</th>
-                  <th>Mobile</th>
-                  <th>Email</th>
-                  <th>Type</th>
-                  <th>GST Number</th>
-                  <th>Status</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'supplierName')}
+                    onClick={() => handleSort('supplierName')}
+                  >
+                    Supplier Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'contactPerson')}
+                    onClick={() => handleSort('contactPerson')}
+                  >
+                    Contact Person
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'mobileNumber')}
+                    onClick={() => handleSort('mobileNumber')}
+                  >
+                    Mobile
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'email')}
+                    onClick={() => handleSort('email')}
+                  >
+                    Email
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'supplierType')}
+                    onClick={() => handleSort('supplierType')}
+                  >
+                    Type
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'gstNumber')}
+                    onClick={() => handleSort('gstNumber')}
+                  >
+                    GST Number
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'status')}
+                    onClick={() => handleSort('status')}
+                  >
+                    Status
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredSuppliers.map((supplier) => (
+                {sortedData.map((supplier) => (
                   <tr key={supplier.id}>
                     <td>{supplier.supplierName}</td>
                     <td>{supplier.contactPerson || '-'}</td>

@@ -7,6 +7,8 @@ import {
   Payment
 } from '../../store/slices/paymentSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './PaymentList.css'
 
 export default function PaymentList() {
@@ -43,6 +45,8 @@ export default function PaymentList() {
 
     return matchesSearch && matchesType && matchesParty
   })
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Payment>(filteredPayments)
 
   const incomingTotal = filteredPayments
     .filter((p) => p.paymentType === 'Incoming')
@@ -124,19 +128,59 @@ export default function PaymentList() {
               <table className="payment-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Project</th>
-                    <th>Party</th>
-                    <th>Amount</th>
-                    <th>Net Paid</th>
-                    <th>Mode</th>
-                    <th>Status</th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'paymentDate')}
+                      onClick={() => handleSort('paymentDate')}
+                    >
+                      Date
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'paymentType')}
+                      onClick={() => handleSort('paymentType')}
+                    >
+                      Type
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'projectName')}
+                      onClick={() => handleSort('projectName')}
+                    >
+                      Project
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'partyName')}
+                      onClick={() => handleSort('partyName')}
+                    >
+                      Party
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'amount')}
+                      onClick={() => handleSort('amount')}
+                    >
+                      Amount
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'netPaidAmount')}
+                      onClick={() => handleSort('netPaidAmount')}
+                    >
+                      Net Paid
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'paymentMode')}
+                      onClick={() => handleSort('paymentMode')}
+                    >
+                      Mode
+                    </th>
+                    <th 
+                      className={getSortClassName(getSortDirection, 'status')}
+                      onClick={() => handleSort('status')}
+                    >
+                      Status
+                    </th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredPayments.map((payment) => (
+                  {sortedData.map((payment) => (
                     <tr key={payment.id}>
                       <td>{new Date(payment.paymentDate).toLocaleDateString()}</td>
                       <td>

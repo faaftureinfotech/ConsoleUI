@@ -141,9 +141,9 @@ export default function PaymentForm({ payment, onSuccess }: PaymentFormProps) {
       case 'Customer':
         return customers.map((c) => ({ id: c.customerId, name: c.name }))
       case 'Employee':
-        return employees.filter((e) => e.type === 'Employee').map((e) => ({ id: e.id, name: e.fullName }))
+        return employees.filter((e) => e.type === 'Employee').map((e) => ({ id: e.id, name: `${e.firstName} ${e.lastName}`.trim() }))
       case 'Contractor':
-        return employees.filter((e) => e.type === 'Contractor').map((e) => ({ id: e.id, name: e.fullName }))
+        return employees.filter((e) => e.type === 'Contractor').map((e) => ({ id: e.id, name: `${e.firstName} ${e.lastName}`.trim() }))
       case 'Supplier':
         return suppliers.map((s) => ({ id: s.id, name: s.supplierName }))
       default:

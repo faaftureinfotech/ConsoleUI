@@ -6,18 +6,23 @@ import {
   selectEmployee,
   Employee
 } from '../../store/slices/employeesSlice'
+import { fetchRoles } from '../../store/slices/rolesSlice'
 import useNotification from '../../components/NotificationContainer'
+import { useTableSort } from '../../hooks/useTableSort'
+import { getSortClassName } from '../../utils/sortHelpers'
 import './EmployeeList.css'
 
 export default function EmployeeList() {
   const dispatch = useAppDispatch()
   const { list, loading, error } = useAppSelector((s) => s.employees)
+  const { list: roles } = useAppSelector((s) => s.roles)
   const { showNotification, NotificationContainer } = useNotification()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<'All' | 'Employee' | 'Contractor'>('All')
 
   useEffect(() => {
     dispatch(fetchEmployees())
+    dispatch(fetchRoles())
   }, [dispatch])
 
   const handleDelete = (employeeId: number) => {
@@ -33,7 +38,8 @@ export default function EmployeeList() {
 
   const filteredEmployees = (Array.isArray(list) ? list : []).filter((employee) => {
     const matchesSearch =
-      employee.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.mobileNumber?.includes(searchTerm) ||
       employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.designation?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -42,6 +48,8 @@ export default function EmployeeList() {
 
     return matchesSearch && matchesType
   })
+
+  const { sortedData, handleSort, getSortDirection } = useTableSort<Employee>(filteredEmployees)
 
   return (
     <>
@@ -86,29 +94,88 @@ export default function EmployeeList() {
             <table className="employee-table">
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>Name</th>
-                  <th>Mobile</th>
-                  <th>Email</th>
-                  <th>Designation</th>
-                  <th>Department</th>
-                  <th>Status</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'type')}
+                    onClick={() => handleSort('type')}
+                  >
+                    Type
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'firstName')}
+                    onClick={() => handleSort('firstName')}
+                  >
+                    First Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'lastName')}
+                    onClick={() => handleSort('lastName')}
+                  >
+                    Last Name
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'mobileNumber')}
+                    onClick={() => handleSort('mobileNumber')}
+                  >
+                    Mobile
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'email')}
+                    onClick={() => handleSort('email')}
+                  >
+                    Email
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'designation')}
+                    onClick={() => handleSort('designation')}
+                  >
+                    Designation
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'department')}
+                    onClick={() => handleSort('department')}
+                  >
+                    Department
+                  </th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'roleName')}
+                    onClick={() => handleSort('roleName')}
+                  >
+                    Role
+                  </th>
+                  <th>User Account</th>
+                  <th 
+                    className={getSortClassName(getSortDirection, 'status')}
+                    onClick={() => handleSort('status')}
+                  >
+                    Status
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredEmployees.map((employee) => (
+                {sortedData.map((employee) => (
                   <tr key={employee.id}>
                     <td>
                       <span className={`type-badge type-${employee.type.toLowerCase()}`}>
                         {employee.type}
                       </span>
                     </td>
-                    <td>{employee.fullName}</td>
+                    <td>{employee.firstName}</td>
+                    <td>{employee.lastName}</td>
                     <td>{employee.mobileNumber}</td>
                     <td>{employee.email || '-'}</td>
                     <td>{employee.designation || '-'}</td>
                     <td>{employee.department || '-'}</td>
+                    <td>{employee.roleName || '-'}</td>
+                    <td>
+                      {employee.userName ? (
+                        <span className="user-link-badge" title={`Linked to user: ${employee.userName}`}>
+                          {employee.userName}
+                        </span>
+                      ) : (
+                        <span className="no-user-badge">-</span>
+                      )}
+                    </td>
                     <td>
                       <span className={`status-badge status-${employee.status.toLowerCase()}`}>
                         {employee.status}

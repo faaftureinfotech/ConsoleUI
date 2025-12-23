@@ -13,6 +13,9 @@ import {
   deleteQuotation,
   deleteQuotationSuccess,
   deleteQuotationFailure,
+  updateQuotationStatus,
+  updateQuotationStatusSuccess,
+  updateQuotationStatusFailure,
   Quotation,
   QuotationFormData,
   BoqItem
@@ -20,7 +23,7 @@ import {
 
 function* handleFetchQuotations() {
   try {
-    const res: { data: Quotation[] } = yield call(apiClient.get, '/quotations')
+    const res: { data: Quotation[] } = yield call(apiClient.get, '/Quotation')
     const quotations = Array.isArray(res.data) ? res.data : []
     yield put(fetchQuotationsSuccess(quotations))
   } catch (err: any) {
@@ -44,15 +47,18 @@ function* handleCreateQuotation(action: ReturnType<typeof createQuotation>) {
         unit: item.unit,
         quantity: item.quantity,
         rate: item.rate,
-        amount: item.amount
+        amount: item.amount,
+        phase: item.phase || 'Ground Floor'
       })),
       subTotal,
       taxAmount,
       totalAmount
     }
 
-    const res: { data: Quotation } = yield call(apiClient.post, '/quotations', payload)
-    yield put(createQuotationSuccess(res.data))
+    // Backend returns just the ID, so we need to fetch the full quotation
+    const createRes: { data: number } = yield call(apiClient.post, '/Quotation', payload)
+    const fetchRes: { data: Quotation } = yield call(apiClient.get, `/Quotation/${createRes.data}`)
+    yield put(createQuotationSuccess(fetchRes.data))
   } catch (err: any) {
     const errorMessage = err.response?.data?.message || 'Failed to create quotation'
     yield put(createQuotationFailure(errorMessage))
@@ -78,14 +84,15 @@ function* handleUpdateQuotation(action: ReturnType<typeof updateQuotation>) {
         unit: item.unit,
         quantity: item.quantity,
         rate: item.rate,
-        amount: item.amount
+        amount: item.amount,
+        phase: item.phase || 'Ground Floor'
       })),
       subTotal,
       taxAmount,
       totalAmount
     }
 
-    const res: { data: Quotation } = yield call(apiClient.put, `/quotations/${id}`, payload)
+    const res: { data: Quotation } = yield call(apiClient.put, `/Quotation/${id}`, payload)
     yield put(updateQuotationSuccess(res.data))
   } catch (err: any) {
     const errorMessage = err.response?.data?.message || 'Failed to update quotation'
@@ -95,11 +102,26 @@ function* handleUpdateQuotation(action: ReturnType<typeof updateQuotation>) {
 
 function* handleDeleteQuotation(action: ReturnType<typeof deleteQuotation>) {
   try {
-    yield call(apiClient.delete, `/quotations/${action.payload}`)
-    yield put(deleteQuotationSuccess(action.payload))
+    const quotationId = action.payload
+    if (quotationId === undefined) {
+      throw new Error('Quotation ID is required')
+    }
+    yield call(apiClient.delete, `/Quotation/${quotationId}`)
+    yield put(deleteQuotationSuccess(quotationId))
   } catch (err: any) {
     const errorMessage = err.response?.data?.message || 'Failed to delete quotation'
     yield put(deleteQuotationFailure(errorMessage))
+  }
+}
+
+function* handleUpdateQuotationStatus(action: ReturnType<typeof updateQuotationStatus>) {
+  try {
+    const { id, status } = action.payload
+    const res: { data: Quotation } = yield call(apiClient.patch, `/Quotation/${id}/status`, { status })
+    yield put(updateQuotationStatusSuccess(res.data))
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.message || 'Failed to update quotation status'
+    yield put(updateQuotationStatusFailure(errorMessage))
   }
 }
 
@@ -108,5 +130,5 @@ export function* quotationSaga() {
   yield takeLatest(createQuotation.type, handleCreateQuotation)
   yield takeLatest(updateQuotation.type, handleUpdateQuotation)
   yield takeLatest(deleteQuotation.type, handleDeleteQuotation)
+  yield takeLatest(updateQuotationStatus.type, handleUpdateQuotationStatus)
 }
-

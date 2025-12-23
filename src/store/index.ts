@@ -8,6 +8,13 @@ import projectReducer from './slices/projectSlice'
 import supplierReducer from './slices/supplierSlice'
 import expenseReducer from './slices/expenseSlice'
 import paymentReducer from './slices/paymentSlice'
+import unitsReducer from './slices/unitsSlice'
+import categoriesReducer from './slices/categoriesSlice'
+import materialsReducer from './slices/materialsSlice'
+import boqMasterReducer from './slices/boqMasterSlice'
+import rolesReducer from './slices/rolesSlice'
+import employeeAllocationReducer from './slices/employeeAllocationSlice'
+import userReducer from './slices/userSlice'
 import rootSaga from './sagas/rootSaga'
 
 const sagaMiddleware = createSagaMiddleware()
@@ -21,7 +28,14 @@ export const store = configureStore({
     project: projectReducer,
     supplier: supplierReducer,
     expense: expenseReducer,
-    payment: paymentReducer
+    payment: paymentReducer,
+    units: unitsReducer,
+    categories: categoriesReducer,
+    materials: materialsReducer,
+    boqMaster: boqMasterReducer,
+    roles: rolesReducer,
+    employeeAllocation: employeeAllocationReducer,
+    user: userReducer
   },
   middleware: (getDefault) => getDefault({ thunk: false }).concat(sagaMiddleware)
 })

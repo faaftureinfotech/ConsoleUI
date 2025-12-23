@@ -209,7 +209,7 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
                 <option value={0}>Select Customer</option>
                 {customers.map((c) => (
                   <option key={c.customerId} value={c.customerId}>
-                    {c.name}
+                    {c.firstName} {c.lastName}
                   </option>
                 ))}
               </select>
@@ -352,7 +352,7 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
                 <option value="">Select Project Manager</option>
                 {employees.filter((e) => e.type === 'Employee').map((e) => (
                   <option key={e.id} value={e.id}>
-                    {e.fullName}
+                    {e.firstName} {e.lastName}
                   </option>
                 ))}
               </select>
@@ -368,7 +368,7 @@ export default function ProjectForm({ project, onSuccess }: ProjectFormProps) {
                 <option value="">Select Contractor</option>
                 {contractors.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.fullName}
+                    {c.firstName} {c.lastName}
                   </option>
                 ))}
               </select>

@@ -1,0 +1,72 @@
+/* Sortable table header styles */
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  position: relative;
+  padding-right: 24px !important;
+}
+
+th.sortable:hover {
+  background-color: #f3f4f6;
+}
+
+/* Sort icon using CSS pseudo-elements */
+th.sortable::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+/* Up arrow (ascending) */
+th.sortable.sort-asc::after {
+  border-bottom: 6px solid #6b7280;
+  border-top: none;
+  opacity: 1;
+}
+
+/* Down arrow (descending) */
+th.sortable.sort-desc::after {
+  border-top: 6px solid #6b7280;
+  border-bottom: none;
+  opacity: 1;
+}
+
+/* Default state - show both arrows stacked */
+th.sortable:not(.sort-asc):not(.sort-desc)::after {
+  border-top: 3px solid #9ca3af;
+  border-bottom: 3px solid #9ca3af;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  height: 8px;
+  width: 0;
+  opacity: 0.4;
+}
+
+th.sortable:hover::after {
+  opacity: 0.6;
+}
+
+th.sortable.sort-asc:hover::after,
+th.sortable.sort-desc:hover::after {
+  opacity: 1;
+}
+
+/* Better visual feedback for sorted columns */
+th.sortable:active {
+  background-color: #e5e7eb;
+}
+
+/* Ensure table headers maintain proper alignment */
+table thead th.sortable {
+  white-space: nowrap;
+}
+

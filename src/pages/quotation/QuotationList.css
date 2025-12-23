@@ -176,6 +176,24 @@
   background: #dc2626;
 }
 
+.btn-send {
+  background: #10b981;
+  color: white;
+}
+
+.btn-send:hover {
+  background: #059669;
+}
+
+.btn-print {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-print:hover {
+  background: #4f46e5;
+}
+
 @media (max-width: 768px) {
   .quotation-list-container {
     padding: 16px;
